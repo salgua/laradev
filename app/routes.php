@@ -19,10 +19,8 @@ Route::get('/', function()
 /**
 * Login route
 */
-Route::get('/login', function()
-{
-    return "this will be the login form";
-});
+Route::get('login', 'AuthController@login');
+Route::post('login', 'AuthController@authenticate');
 
 /**
 * Admin routes
