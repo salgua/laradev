@@ -41,8 +41,13 @@ class AuthController extends BaseController {
 			    return Redirect::intended('admin');
 			}
 		else {
-			echo "TODO: implement wrong password";
-		}
+				return Redirect::to('login')->with('error', 'Login Failed');
+			}
+	}
+
+	public function signup()
+	{
+		return View::make('signup')->with('bodyClass', 'bg-black');
 	}
 
 	public function logout()

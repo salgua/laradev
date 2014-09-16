@@ -20,7 +20,8 @@
                     	{{Form::submit(trans('Sign me in'), array('class' => 'btn bg-olive btn-block', 'ng-disabled' => 'loginform.$invalid'))}}                                                            
                         <p>
                             {{link_to('password/remind', trans('I forgot my password'))}}
-                        </p>                    
+                        </p>
+                        <p>{{link_to('signup', trans('New user? Register now!'))}}</p>                    
                     </div>
                 {{ Form::close() }}
             </div>

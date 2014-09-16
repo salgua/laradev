@@ -43,11 +43,7 @@
         <![endif]-->
 	</head>
 	<body class="{{{isset($bodyClass) ? $bodyClass : 'skin-blue'}}}">
-            <?php
-                $data = Session::all();
-                var_dump($data);
-            ?>
-        {{-- Flashing error message --}}
+        {{-- Flashing error and status message message --}}
         @if (Session::get('error'))
             <div class="alert alert-danger alert-dismissable">
                 <i class="fa fa-ban"></i>
@@ -55,6 +51,15 @@
                 {{{ Session::get('error') }}}
             </div>
         @endif
+
+        @if (Session::get('status'))
+            <div class="alert alert-info alert-dismissable">
+                <i class="fa fa-info"></i>
+                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                {{{ Session::get('status') }}}
+            </div>
+        @endif
+
 		<div class="wrapper">
 			@yield('content')
 		</div>
@@ -91,5 +96,9 @@
         {{ HTML::script('js/angular.min.js') }}
         {{ HTML::script('js/ui-utils.min.js') }}
         @yield('angular')
+                    <?php
+                $data = Session::all();
+                var_dump($data);
+            ?>
 	</body>
 </html>
