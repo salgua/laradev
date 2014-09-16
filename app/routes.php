@@ -17,15 +17,20 @@ Route::get('/', function()
 });
 
 /**
-* Login route
+* Auth routes
 */
 Route::get('login', 'AuthController@login');
 Route::post('login', 'AuthController@authenticate');
+Route::get('logout', 'AuthController@logout');
+
+/**
+* Password remind controller
+*/
+Route::controller('password', 'RemindersController');
 
 /**
 * Admin routes
 */
-
 Route::group(array('prefix' => 'admin', 'before' => 'auth'), function()
 {
 	Route::get('/', 'Admin\Controllers\DashboardController@index');
