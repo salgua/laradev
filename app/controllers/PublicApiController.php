@@ -20,27 +20,26 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class UserTableSeeder extends Seeder {
+class PublicApiController extends BaseController {
 
-    public function run()
-    {
-        DB::table('users')->delete();
+	public function getIndex()
+	{
+		return "Laradev Public API v0.1";
+	}
 
-        $role = Role::create(array(
-            'id' => 1,
-            'title' => 'administrator'
-        ));
+	/**
+	*check if the email address exists
+	*/
+	public function getCheckEmail()
+	{
+		$email = Input::get('value');
+		if (User::where('email', '=', $email)->first())
+		{
+			$response = array('isValid' => false, 'value' => $email);
+		} else {
+			$response = array('isValid' => true, 'value' => $email);
+		}
+		return Response::json($response);
+	}
 
-        $user = User::create(array(
-        	'id' => 1,
-            'email' => 'info@deved.it',
-            'password' => Hash::make('laradev'),
-            'active' => true
-        ));
-
-        $user->role()->attach($role->id);
-        $user->save();
-
-
-    }
 }

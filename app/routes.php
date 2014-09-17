@@ -23,11 +23,18 @@ Route::get('login', 'AuthController@login');
 Route::post('login', 'AuthController@authenticate');
 Route::get('logout', 'AuthController@logout');
 Route::get('signup', 'AuthController@signup');
+Route::post('signup', 'AuthController@registerUser');
+Route::get('confirm/{code}', 'AuthController@confirmUser');
 
 /**
 * Password remind controller
 */
 Route::controller('password', 'RemindersController');
+
+/**
+* Public API route
+*/
+Route::controller('api', 'PublicApiController');
 
 /**
 * Admin routes

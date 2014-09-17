@@ -43,6 +43,64 @@
         <![endif]-->
 	</head>
 	<body class="{{{isset($bodyClass) ? $bodyClass : 'skin-blue'}}}">
+    <header class="header">
+        <a href="/" class="logo">Deved Platform</a>
+        <nav class="navbar navbar-static-top" role="navigation">
+            <!-- Sidebar toggle button-->
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        @if (Auth::check())
+                            <!-- User Account: style can be found in dropdown.less -->
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="glyphicon glyphicon-user"></i>
+                                        <span>{{ Auth::user()->email }} <i class="caret"></i></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <!-- User image -->
+                                    <li class="user-header bg-light-blue">
+                                        <img src="img/avatar3.png" class="img-circle" alt="User Image" />
+                                        <p>
+                                            Jane Doe - Web Developer
+                                            <small>Member since Nov. 2012</small>
+                                        </p>
+                                    </li>
+                                    <!-- Menu Body -->
+                                    <li class="user-body">
+                                        <div class="col-xs-4 text-center">
+                                            <a href="#">Followers</a>
+                                        </div>
+                                        <div class="col-xs-4 text-center">
+                                            <a href="#">Sales</a>
+                                        </div>
+                                        <div class="col-xs-4 text-center">
+                                            <a href="#">Friends</a>
+                                        </div>
+                                    </li>
+                                    <!-- Menu Footer-->
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                        </div>
+                                        <div class="pull-right">
+                                            {{ link_to('logout', trans('Sign out'), array('class' => 'btn btn-default btn-flat')) }}
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        @else
+                            <li>{{link_to('login', 'login')}}</li>
+                        @endif
+                    </ul>
+                </div>
+        </nav>
+    </header>
         {{-- Flashing error and status message message --}}
         @if (Session::get('error'))
             <div class="alert alert-danger alert-dismissable">
@@ -64,13 +122,13 @@
 			@yield('content')
 		</div>
 		<!-- jQuery 2.0.2 -->
-		{{ HTML::script('http://ajax.googleapis.com/ajax/libs/jquery/2.0.2/jquery.min.js') }}
+		{{ HTML::script('bower_components/jquery/dist/jquery.min.js') }}
         <!-- jQuery UI 1.10.3 -->
         {{ HTML::script('js/jquery-ui-1.10.3.min.js') }}
         <!-- Bootstrap -->
         {{ HTML::script('js/bootstrap.min.js') }}
         <!-- Morris.js charts -->
-        <script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script>
+        <!-- script src="//cdnjs.cloudflare.com/ajax/libs/raphael/2.1.0/raphael-min.js"></script -->
         {{ HTML::script('js/plugins/morris/morris.min.js') }}
         <!-- Sparkline -->
         {{ HTML::script('js/plugins/sparkline/jquery.sparkline.min.js') }}
@@ -95,6 +153,7 @@
         {{-- HTML::script('js/AdminLTE/demo.js') --}}
         {{ HTML::script('js/angular.min.js') }}
         {{ HTML::script('js/ui-utils.min.js') }}
+        {{ HTML::script('bower_components/ng-remote-validate/release/ngRemoteValidate.0.4.1.min.js') }}
         @yield('angular')
                     <?php
                 $data = Session::all();

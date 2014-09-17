@@ -6,8 +6,9 @@
                 {{ Form::open(array('url' => 'signup', 'novalidate' => '', 'name' => 'signupform')) }}
                     <div class="body bg-gray">
                         <div class="form-group has-feedback" ng-class="{ 'has-error': signupform.email.$invalid && signupform.email.$dirty }">
-                            {{Form::email('email', '', array('class' => 'form-control', 'placeholder' => 'Email', 'required' => '', 'ng-model' => 'email'))}}
-                            <span ng-show="signupform.email.$invalid && signupform.email.$dirty" class="help-block">{{trans('Insert a valid email address')}}</span>
+                            {{Form::email('email', '', array('class' => 'form-control', 'placeholder' => 'Email', 'required' => '', 'ng-model' => 'email', 'ng-remote-validate' => 'api/check-email', 'ng-remote-method' => 'GET'))}}
+                            <span ng-show="!signupform.email.$error.ngRemoteValidate && signupform.email.$invalid && signupform.email.$dirty" class="help-block">{{trans('Insert a valid email address')}}</span>
+                            <span ng-show="signupform.email.$error.ngRemoteValidate" class="help-block">{{trans('The email address is already registered, ').link_to('login', trans('log in'))}}</span>
                         </div>
                         <div class="form-group has-feedback" ng-class="{ 'has-error': signupform.password.$invalid && signupform.password.$dirty }">
                             <input name="password" type="password" class="form-control" placeholder="Password" required ng-model="password">
@@ -26,8 +27,8 @@
 @stop
 @section('angular')
 <script>
-    var app = angular.module('app', ['ui.utils']);
-    app.controller('MainCtrl', ['$scope', function($scope) {
+    var app = angular.module('app', ['ui.utils', 'remoteValidation']);
+    app.controller('MainCtrl', ['$scope', '$http', function($scope, $http) {
 
     }]);
 

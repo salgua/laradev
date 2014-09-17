@@ -1,0 +1,41 @@
+{
+  "name": "ng-remote-validate",
+  "version": "0.5.1",
+  "description": "ngRemoveValidate makes it easy for you to validate form fields agents data from your server (AngularJS Ajax Validation).",
+  "main": "release/ngRemoteValidate.js",
+  "keywords": [
+    "angular",
+    "angularjs",
+    "validation",
+    "ajax-validation"
+  ],
+  "authors": [
+    "Paul"
+  ],
+  "license": "Apache License 2.0",
+  "homepage": "https://github.com/webadvanced/ng-remote-validate",
+  "ignore": [
+    "**/.*",
+    "app",
+    "build",
+    "src",
+    "tests",
+    ".gitignore",
+    "bower.json",
+    "bowerTemplate.json",
+    "LICENSE",
+    "NOTICE",
+    "readme.md",
+    "version.txt"
+  ],
+  "_release": "0.5.1",
+  "_resolution": {
+    "type": "version",
+    "tag": "v0.5.1",
+    "commit": "0a2a8a804187e2924414e4430fb73bebbf8c81cc"
+  },
+  "_source": "git://github.com/webadvanced/ng-remote-validate.git",
+  "_target": "~0.5.1",
+  "_originalSource": "ng-remote-validate",
+  "_direct": true
+}

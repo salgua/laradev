@@ -36,7 +36,7 @@ class AuthController extends BaseController {
 		$email=Input::get('email');
 		$password=Input::get('password');
 		$remember = Input::get('remember_me') ? true : false;
-		if (Auth::attempt(array('email' => $email, 'password' => $password), $remember))
+		if (Auth::attempt(array('email' => $email, 'password' => $password, 'active' => 1), $remember))
 			{
 			    return Redirect::intended('admin');
 			}
@@ -48,6 +48,45 @@ class AuthController extends BaseController {
 	public function signup()
 	{
 		return View::make('signup')->with('bodyClass', 'bg-black');
+	}
+
+	public function registerUser()
+	{
+		$input = Input::all();
+		var_dump($input);
+		if ($input['password'] === $input['password_confirmation'])
+		{
+			$user = new User;
+			$user->email = $input['email'];
+			$user->password = Hash::make($input['password']);
+			$user->active = false;
+			if ($user->save()) {
+				$confirmation_code = Crypt::encrypt($user->email);
+				if (Mail::send('emails.auth.confirm', array('confirmation_code' => $confirmation_code), function($message) use ($user){
+    						$message->to($user->email, $user->email)->subject('Welcome! Please confirm your account!');
+    					})) 
+				{
+
+				}
+				return Redirect::to('login')->with('status', trans('You are registered. Please check your email to confirm the registration.'));
+			} else {
+				return Redirect::to('login')->with('error', trans('Registriation failed.'));
+			}
+		}
+
+	}
+
+	public function confirmUser($code)
+	{
+		$email = Crypt::decrypt($code);
+		$user = User::where('email', '=', $email)->first();
+		if ($user->active)
+		{
+			return Redirect::to('login')->with('error', trans('User already active!'));
+		}
+		$user->active = true;
+		$user->save();
+		return Redirect::to('login')->with('status', trans('Congratulation, your account is actived. Please login to proceed'));
 	}
 
 	public function logout()
