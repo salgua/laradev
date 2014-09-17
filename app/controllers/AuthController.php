@@ -28,7 +28,7 @@ class AuthController extends BaseController {
 
 	public function login()
 	{
-		return View::make('login')->with('bodyClass', 'bg-black');
+		return View::make('login')->with('bodyClass', 'skin-black');
 	}
 
 	public function authenticate()
@@ -47,7 +47,7 @@ class AuthController extends BaseController {
 
 	public function signup()
 	{
-		return View::make('signup')->with('bodyClass', 'bg-black');
+		return View::make('signup')->with('bodyClass', 'skin-black');
 	}
 
 	public function registerUser()

@@ -54,6 +54,34 @@ Route::filter('auth.basic', function()
 	return Auth::basic();
 });
 
+
+/**
+* Administrator filter
+*/
+
+Route::filter('administrator', function()
+{
+	if (Auth::guest())
+	{
+		if (Request::ajax())
+		{
+			return Response::make('Unauthorized', 401);
+		}
+		else
+		{
+			return Redirect::guest('login');
+		}
+	}
+
+	$administrator_role = Auth::user()->role()->where('title', '=', 'administrator')->get();
+
+	if (!count($administrator_role))
+	{
+		return Redirect::guest('login')->with('error', 'You are not an administrator!');;
+	}
+	
+});
+
 /*
 |--------------------------------------------------------------------------
 | Guest Filter

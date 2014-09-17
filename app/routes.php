@@ -13,7 +13,16 @@
 
 Route::get('/', function()
 {
-	return View::make('hello');
+		if (Auth::check())
+		{
+			$roles = Auth::user()->role()->where('title', '=', 'administrator')->get();
+			return $roles;
+		}
+		else 
+		{
+			return View::make('hello');
+		}
+	
 });
 
 /**
@@ -39,7 +48,7 @@ Route::controller('api', 'PublicApiController');
 /**
 * Admin routes
 */
-Route::group(array('prefix' => 'admin', 'before' => 'auth'), function()
+Route::group(array('prefix' => 'admin', 'before' => 'administrator'), function()
 {
 	Route::get('/', 'Admin\Controllers\DashboardController@index');
 });
