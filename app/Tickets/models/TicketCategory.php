@@ -20,29 +20,17 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class UserTableSeeder extends Seeder {
+namespace Tickets\Models;
 
-    public function run()
-    {
-        DB::table('roles')->delete();
-        DB::table('users')->delete();
+class TicketCategory extends \Eloquent {
 
+	protected $table = 'tickets_categories';
 
-        $role = Role::create(array(
-            'id' => 1,
-            'title' => 'administrator'
-        ));
+	public function manager() {
+		return $this->belongsTo('\User', 'manager_id');
+	}
 
-        $user = User::create(array(
-        	'id' => 1,
-            'email' => 'info@deved.it',
-            'password' => Hash::make('laradev'),
-            'active' => true
-        ));
-
-        $user->role()->attach($role->id);
-        $user->save();
-
-
-    }
+	public function tickets() {
+		return $this->hasMany('Tickets\Models\Ticket', 'category_id');
+	}
 }

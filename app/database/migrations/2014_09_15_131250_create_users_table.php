@@ -18,6 +18,8 @@ class CreateUsersTable extends Migration {
                 $t->string('password', 255);
                 $t->rememberToken();
                 $t->timestamps();
+                //add unique index to email
+                $t->unique('email');
         });
 	}
 

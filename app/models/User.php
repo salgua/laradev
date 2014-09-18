@@ -28,4 +28,24 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 		return $this->belongsToMany('Role');
 	}
 
+	/**
+	* Tickets Module relations
+	*/
+
+	/**
+	* assigned tickets
+	*/
+	public function assigedTickets()
+	{
+		return $this->hasMany('Tickets\Models\Ticket', 'assigned_to'); 
+	}
+
+	/**
+	* assigned categories for default ticket assigment
+	*/
+	public function ticketsCategories()
+	{
+		return $this->hasMany('Tickets\Models\TicketCategory', 'manager_id');
+	}
+
 }

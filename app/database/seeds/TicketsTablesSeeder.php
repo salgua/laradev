@@ -20,29 +20,29 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class UserTableSeeder extends Seeder {
+class TicketsTablesSeeder extends Seeder {
 
     public function run()
     {
-        DB::table('roles')->delete();
-        DB::table('users')->delete();
+        DB::table('tickets_categories')->delete();
 
+        //administrator user
+        $admin = User::find(1);
 
-        $role = Role::create(array(
-            'id' => 1,
-            'title' => 'administrator'
-        ));
+        //generic category
+        $category = new Tickets\Models\TicketCategory;
+        $category->title = 'generic';
+        $category->manager()->associate($admin); //set default administrator as manager
+        $category->save();
 
-        $user = User::create(array(
-        	'id' => 1,
-            'email' => 'info@deved.it',
-            'password' => Hash::make('laradev'),
-            'active' => true
-        ));
-
-        $user->role()->attach($role->id);
-        $user->save();
-
-
+        //demo ticket
+        $ticket = new Tickets\Models\Ticket;
+        $ticket->author_email = 'demo@demo.it';
+        $ticket->subject = "Test ticket";
+        $ticket->description = "Test description";
+        $ticket->category()->associate($category);
+        $ticket->owner()->associate($admin);
+        $ticket->open = true;
+        $ticket->save();
     }
 }

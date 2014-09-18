@@ -13,16 +13,7 @@
 
 Route::get('/', function()
 {
-		if (Auth::check())
-		{
-			$roles = Auth::user()->role()->where('title', '=', 'administrator')->get();
-			return $roles;
-		}
-		else 
-		{
-			return View::make('hello');
-		}
-	
+	return View::make('start')->with('bodyClass', 'skin-black');
 });
 
 /**
