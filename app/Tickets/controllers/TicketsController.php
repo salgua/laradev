@@ -55,7 +55,7 @@ class TicketsController extends \BaseController {
 
 		if($ticket->save())
 		{
-		\Mail::send('emails.tickets.confirm', array('ticket_code' => $ticket->code), function($message) use ($ticket){
+		\Mail::send('emails.tickets.confirm', array('ticket_code' => $ticket->code, 'author_email' => $ticket->author_email), function($message) use ($ticket){
     						$message->to($ticket->author_email, $ticket->author_email)->subject(trans('Thank you for your ticket submission'));
     					});
 		return \Redirect::back()->with('status', trans('Thank you for your submission. We will answer you as soon as possible.'));	
