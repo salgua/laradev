@@ -62,12 +62,9 @@ class AuthController extends BaseController {
 			$user->active = false;
 			if ($user->save()) {
 				$confirmation_code = Crypt::encrypt($user->email);
-				if (Mail::send('emails.auth.confirm', array('confirmation_code' => $confirmation_code), function($message) use ($user){
+				Mail::send('emails.auth.confirm', array('confirmation_code' => $confirmation_code), function($message) use ($user){
     						$message->to($user->email, $user->email)->subject('Welcome! Please confirm your account!');
-    					})) 
-				{
-
-				}
+    					});
 				return Redirect::to('login')->with('status', trans('You are registered. Please check your email to confirm the registration.'));
 			} else {
 				return Redirect::to('login')->with('error', trans('Registriation failed.'));

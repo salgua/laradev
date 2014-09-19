@@ -20,36 +20,12 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-class UserTableSeeder extends Seeder {
+/**
+* Tickets sistem variables
+**/
 
-    public function run()
-    {
-        DB::table('roles')->delete();
-        DB::table('users')->delete();
+return array(
 
-        //add administrator role
-        $role_admin = Role::create(array(
-            'id' => 1,
-            'title' => 'administrator'
-        ));
+	'title' => 'Deved tickets system'
 
-        //add ticket manager role
-        $role_ticket = Role::create(array(
-            'id' => 2,
-            'title' => 'tickets manager'
-        ));
-
-        $user = User::create(array(
-        	'id' => 1,
-            'email' => 'info@deved.it',
-            'password' => Hash::make('laradev'),
-            'active' => true
-        ));
-
-        $user->role()->attach($role_admin->id);
-        $user->role()->attach($role_ticket->id);
-        $user->save();
-
-
-    }
-}
+);

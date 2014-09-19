@@ -43,3 +43,10 @@ Route::group(array('prefix' => 'admin', 'before' => 'administrator'), function()
 {
 	Route::get('/', 'Admin\Controllers\DashboardController@index');
 });
+
+/**
+* Tickets system routes
+*/
+Route::group(array('prefix' => 'tickets', 'before' => 'tickets'), function(){
+	Route::controller('/', 'Tickets\Controllers\TicketsController');
+});
