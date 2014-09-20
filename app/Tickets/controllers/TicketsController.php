@@ -29,10 +29,20 @@ class TicketsController extends \BaseController {
         $this->beforeFilter('csrf', array('on' => 'post'));
     }
 	
+	/**
+	* Show all tickets regarding a user. If the user has the ticket manager role, display all tickets
+	*/
 	public function getIndex() {
-		return "OK";
+		$tickets = Models\Ticket::involvedUser(\Auth::user())
+					->orderBy('open', 'desc')
+					->orderBy('created_at', 'asc')
+					->get();
+		return \View::make('tickets.index')->with('tickets', $tickets);
 	}
 
+	/**
+	* Show the guest submit ticket form
+	*/
 	public function getGuest() {
 		$categories = Models\TicketCategory::all();
 		$categories_select_box = array();
@@ -42,6 +52,17 @@ class TicketsController extends \BaseController {
 		return \View::make('tickets.guest')->with('categories', $categories_select_box);
 	}
 
+	/**
+	* Show a ticket
+	*/
+	public function getShow($code) {
+		$ticket = Models\Ticket::with('comments')->where('code', '=', $code)->firstOrFail();
+		return \View::make('tickets.show')->with(array('ticket' => $ticket));
+	}
+
+	/**
+	* Save a new ticket
+	*/
 	public function postSave() {
 		$ticket = new Models\Ticket;
 		$ticket->author_email = \Input::get('email');
@@ -62,6 +83,47 @@ class TicketsController extends \BaseController {
 		}
 	}
 
+	/**
+	* Close a ticket
+	*/
+	public function postClose() {
+		$ticket = Models\Ticket::find(\Input::get('id'));
+		if ($ticket->isManager())
+		{
+			$comment = new Models\TicketComment;
+			$comment->description = trans('ticket closed');
+			$comment->author_email = \Auth::user()->email;
+			$ticket->open = false;
+			$ticket->comments()->save($comment);
+			$ticket->save();
+			return \Redirect::back();
+		} else {
+			return \Redirect::back()->with('error', trans('You are not authorized to close this ticket'));
+		}
+	}
+
+	/**
+	* Reopen a ticket
+	*/
+	public function postOpen() {
+		$ticket = Models\Ticket::find(\Input::get('id'));
+		if ($ticket->isManager())
+		{
+			$comment = new Models\TicketComment;
+			$comment->description = trans('ticket open');
+			$comment->author_email = \Auth::user()->email;
+			$ticket->open = true;
+			$ticket->comments()->save($comment);
+			$ticket->save();
+			return \Redirect::back();
+		} else {
+			return \Redirect::back()->with('error', trans('You are not authorized to re-open this ticket'));
+		}
+	}
+
+	/**
+	* Post a comment to a ticket
+	*/
 	public function postComment() {
 		$ticket = Models\Ticket::find(\Input::get('ticket'));
 		$comment = new Models\TicketComment;
@@ -71,6 +133,9 @@ class TicketsController extends \BaseController {
 		return \Redirect::back();
 	}
 
+	/**
+	* With this funcione everyone can see the ticket, also guest users (@TODO: verify)
+	*/
 	public function getCode($code, $email = false) {
 		$ticket = Models\Ticket::with('comments')->where('code', '=', $code)->firstOrFail();
 		return \View::make('tickets.show')->with(array('ticket' => $ticket, 'email' => $email));

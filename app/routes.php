@@ -19,10 +19,12 @@ Route::get('/', function()
 /**
 * Auth routes
 */
+Route::get('login/{email}', 'AuthController@login');
 Route::get('login', 'AuthController@login');
 Route::post('login', 'AuthController@authenticate');
 Route::get('logout', 'AuthController@logout');
 Route::get('signup', 'AuthController@signup');
+Route::get('signup/{email}', 'AuthController@signup');
 Route::post('signup', 'AuthController@registerUser');
 Route::get('confirm/{code}', 'AuthController@confirmUser');
 

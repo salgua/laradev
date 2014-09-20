@@ -29,7 +29,7 @@
 <script>
     var app = angular.module('app', ['ui.utils', 'remoteValidation']);
     app.controller('MainCtrl', ['$scope', '$http', function($scope, $http) {
-
+        $scope.email = '<?php echo $email; ?>';
     }]);
 
 </script>

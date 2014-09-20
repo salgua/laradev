@@ -89,20 +89,20 @@ Route::filter('tickets', function()
 {
 	if (
 			!Request::is('tickets/guest') && 
+			!Request::is('tickets/guest/*') && 
 			!Request::is('tickets/save') && 
-			!Request::is('tickets/code/*') &&
-			!Request::is('tickets/comment')
+			!Request::is('tickets/code/*')
 		) //open routes
 	{
 			//if you are not logged in, go to ticket guest page
 			if (Auth::guest()) return Redirect::guest('tickets/guest');
 
 			//if you are not a ticket manager, go to my-tickets page
-			$tickets_mamager_role = Auth::user()->role()->where('title', '=', 'tickets manager')->first();
+			/*$tickets_mamager_role = Auth::user()->role()->where('title', '=', 'tickets manager')->first();
 			if (!$tickets_mamager_role)
 			{
 				return Redirect::to('tickets/my-tickets');
-			}
+			}*/
 	}
 });
 

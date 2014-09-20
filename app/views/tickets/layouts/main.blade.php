@@ -49,13 +49,61 @@
         <header class="header">
             <a href="/" class="logo">{{{ Config::get('tickets.title') }}}</a>
             <nav class="navbar navbar-static-top" role="navigation">
-                @yield('header')
+                <!-- Sidebar toggle button-->
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        @if (Auth::check())
+                            <!-- User Account: style can be found in dropdown.less -->
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="glyphicon glyphicon-user"></i>
+                                        <span>{{ Auth::user()->email }} <i class="caret"></i></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <!-- Menu Body -->
+                                    <li class="user-body">
+                                        <div class="col-xs-12 text-center">
+                                            {{ link_to('tickets', trans('Tickets')) }}
+                                        </div>
+                                    </li>
+                                    <!-- Menu Footer-->
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <!-- a href="#" class="btn btn-default btn-flat">Profile</a -->
+                                        </div>
+                                        <div class="pull-right">
+                                            {{ link_to('logout', trans('Sign out'), array('class' => 'btn btn-default btn-flat')) }}
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        @else
+                            <li>{{link_to('login', trans('login'))}}</li>
+                            <li>{{link_to('signup', trans('register'))}}</li>
+                        @endif
+                    </ul>
+                </div>
             </nav>
         </header>
         <div class="wrapper row-offcanvas row-offcanvas-left">
             <aside class="left-side sidebar-offcanvas">
                 <section class="sidebar">
-                    @yield('sidebar')
+                    <ul class="sidebar-menu">
+                    @if (Auth::check())
+                        <li>
+                            <a href="{{url('tickets')}}"><i class="fa fa-envelope"></i><span>Tickets</span></a>
+                        </li>
+                    @else
+                        <li><a href="{{url('login')}}"><i class="fa fa-sign-in"></i><span>{{trans('Log in')}}</span></a></li>
+                        <li><a href="{{url('signup')}}"><i class="fa fa-user"></i><span>{{trans('Register')}}</span></a></li>
+                    @endif
+                    </ul>
                 </section>
             </aside>
 			<aside class="right-side">

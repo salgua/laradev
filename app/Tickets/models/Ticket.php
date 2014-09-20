@@ -41,4 +41,41 @@ class Ticket extends \Eloquent {
 		return $this->hasMany('Tickets\Models\TicketComment', 'ticket_id');
 	}
 
+	/**
+	* Check if a user is a mangager of a ticket
+	*/
+	public function isManager()
+	{
+		if (\Auth::check())
+		{
+			$user = \Auth::user();
+			if ($this->owner->email == $user->email || $user->role()->where('title', '=', 'tickets manager')->first())
+			{
+				return true;
+			}
+			return false;
+		} 
+
+		return false;
+		
+	}
+
+	/**
+	*Query scope to find tickets with a user involved as author or manager
+	*/
+	public function scopeInvolvedUser($query, $user)
+	{
+		$manager_role = false;
+		if (\Auth::check())
+		{
+			$manager_role = \Auth::user()->role()->where('title', '=', 'tickets manager')->first();
+		}
+		if ($manager_role)
+		{
+			return $query->where('created_at', '>', '0'); //if user is tickets manager return all tickets
+		}
+
+		return $query->whereRaw('assigned_to = ? or author_email = ?', array($user->id, $user->email));
+	}
+
 }

@@ -26,9 +26,9 @@ class AuthController extends BaseController {
         $this->beforeFilter('csrf', array('on' => 'post'));
     }
 
-	public function login()
+	public function login($email = false)
 	{
-		return View::make('login')->with('bodyClass', 'bg-black');
+		return View::make('login')->with(array('bodyClass' => 'bg-black', 'email' => $email));
 	}
 
 	public function authenticate()
@@ -38,16 +38,16 @@ class AuthController extends BaseController {
 		$remember = Input::get('remember_me') ? true : false;
 		if (Auth::attempt(array('email' => $email, 'password' => $password, 'active' => 1), $remember))
 			{
-			    return Redirect::intended('admin');
+			    return Redirect::intended('/');
 			}
 		else {
 				return Redirect::to('login')->with('error', 'Login Failed');
 			}
 	}
 
-	public function signup()
+	public function signup($email = false)
 	{
-		return View::make('signup')->with('bodyClass', 'bg-black');
+		return View::make('signup')->with(array('bodyClass' => 'bg-black', 'email' => $email));
 	}
 
 	public function registerUser()

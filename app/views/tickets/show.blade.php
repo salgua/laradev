@@ -57,6 +57,26 @@
             				</div>
          				</div>
          			</div>
+                  @if ($ticket->isManager())
+                  <div class="box box-primary">
+                     <div class="box-header">
+                        <h3 class="box-title">{{trans('Ticket manager actions')}}</h3>
+                     </div>
+                     <div class="box-body">
+                        @if ($ticket->open)
+                           {{ Form::open(array('url' => 'tickets/close', 'novalidate' => '', 'name' => 'form')) }}
+                           {{ Form::hidden('id', $ticket->id) }}
+                           {{ Form::submit(trans('Close ticket'), array('class' => 'btn btn-danger')) }}
+                           {{ Form::close()}}
+                        @else
+                           {{ Form::open(array('url' => 'tickets/open', 'novalidate' => '', 'name' => 'form')) }}
+                           {{ Form::hidden('id', $ticket->id) }}
+                           {{ Form::submit(trans('Reopen ticket'), array('class' => 'btn btn-success')) }}
+                           {{ Form::close()}} 
+                        @endif                       
+                     </div>
+                  </div>
+                  @endif
          		</div>
                <div class="col-md-6">
                   <div class="box box-warning">
@@ -79,21 +99,29 @@
                            <p>{{trans("There aren't comments.")}}</p>
                         @endif
                      </div>
+                           @if (Auth::check() && $ticket->open)
                            {{ Form::open(array('url' => 'tickets/comment', 'novalidate' => '', 'name' => 'form')) }}
                            <div class="box-footer">
                                  {{ Form::hidden('ticket', $ticket->id) }}
-                                 <div class="form-group has-feedback" ng-class="{ 'has-error': form.email.$invalid && form.email.$dirty }">
-                                 <label for="email">{{trans('Email address')}} *</label>
-                                 {{Form::email('email', '', array('class' => 'form-control', 'placeholder' => 'Email', 'required' => '', 'ng-model' => 'email'))}}
-                                 <span ng-show="ticketform.email.$invalid && ticketform.email.$dirty" class="help-block">{{trans('Insert a valid email address')}}</span>
-                                 </div>
+                                 {{ Form::hidden('email', Auth::user()->email )}}
+
                                  <div class="form-group">
                                     <label for="description">{{{ trans('Comment') }}} *</label>
                                     {{ Form::textarea('description', '', array('class' => 'form-control', 'required' => '', 'ng-model' => 'description', 'rows' => '2')) }}
                                   </div>
                               {{Form::submit(trans('Submit'), array('class' => 'btn btn-primary', 'ng-disabled' => 'form.$invalid'))}}
                            </div>
-                        {{ Form::close() }}
+                           {{ Form::close() }}
+                           @elseif (Auth::check())
+                           <div class="box-footer">
+                              <p>{{trans('Comments for this ticket are closed')}}</p>
+                           </div>
+                           @else
+                           <div class="box-footer">
+                              <p>{{trans('You must be logged in comment this ticket!')}}</p>
+                              <p>{{link_to('login/'.$email, trans('login'))}} - {{trans('New user?')}} {{link_to('signup/'.$email, trans('register now'))}}</p>
+                           </div>
+                           @endif
                      </div>
                   </div>
                </div>
@@ -103,7 +131,7 @@
 <script>
     var app = angular.module('app', ['ui.utils', 'remoteValidation']);
     app.controller('MainCtrl', ['$scope', '$http', function($scope, $http) {
-         $scope.email = '<?php echo $email; ?>';
+        
     }]);
 </script>
 @stop

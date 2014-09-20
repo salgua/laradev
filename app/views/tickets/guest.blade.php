@@ -10,7 +10,7 @@
 		<section class="content-header">
             <h1>
                 {{{ Config::get('tickets.title') }}}
-                <small>{{{ trans('ticket form') }}}</small>
+                <small>{{{ trans('guest area') }}}</small>
             </h1>
          </section>
          <section class="content" ng-app="app" ng-controller="MainCtrl as main">
