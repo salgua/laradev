@@ -23,9 +23,31 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	 */
 	protected $hidden = array('password', 'remember_token');
 
-	public function role()
+	public function role() //was better name this function roles...
 	{
 		return $this->belongsToMany('Role');
+	}
+
+	/**
+	* This function returns true if a user has a speciefied role name
+	*/
+	public function hasRole($roleName)
+	{
+		foreach ($this->role as $role) {
+			if ($role->name = $roleName)
+			{
+				return true;
+			}
+		return false;
+		}
+	}
+
+	public function scopeWithRole($query, $role)
+	{
+		return $query->whereHas('role', function($q) use ($role)
+			{
+				return $q->where('title', '=', $role);
+			});
 	}
 
 	/**

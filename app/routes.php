@@ -13,7 +13,8 @@
 
 Route::get('/', function()
 {
-	return View::make('start')->with('bodyClass', 'skin-black');
+	//return View::make('start')->with('bodyClass', 'skin-black');
+	return Redirect::to('tickets');
 });
 
 /**

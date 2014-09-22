@@ -20,22 +20,11 @@
 // OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
 // SOFTWARE.
 
-namespace Tickets\Models;
 
-class TicketComment extends \Eloquent {
-
-	protected $table = 'tickets_comments';
-
-	protected $touches = array('ticket');
-
-	public function ticket()
-	{
-		return $this->belongsTo('Tickets\Models\Ticket', 'ticket_id');
-	}
-
-	public function parent()
-	{
-		return $this->belongsTo('Tickets\Models\TicketComment', 'parent_id');
-	}	
-
+/**
+* The function return a robohash url
+*/
+function getAvatar($email, $gravatar = true) {
+	$url = $gravatar ? sprintf("http://robohash.org/%s?gravatar=yes", $email) : sprintf("http://robohash.org/%s", $email);
+	return $url;
 }

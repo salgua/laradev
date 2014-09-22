@@ -33,10 +33,16 @@ class UserTableSeeder extends Seeder {
             'title' => 'administrator'
         ));
 
-        //add ticket manager role
+        //add tickets manager role
         $role_ticket = Role::create(array(
             'id' => 2,
             'title' => 'tickets manager'
+        ));
+
+        //add tickets operator role
+        Role::create(array(
+            'id' => 3,
+            'title' => 'tickets operator'
         ));
 
         $user = User::create(array(

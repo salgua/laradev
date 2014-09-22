@@ -12,7 +12,7 @@
          		<div class="col-md-6">
          			<div class="box box-primary">
          				<div class="box-header">
-         					<h3 class="box-title">Ticket #{{{ $ticket->code }}}</h3>
+         					<h3 class="box-title">Ticket #{{{ $ticket->code }}} / {{{ $ticket->created_at }}}</h3>
          				</div>
          				<div class="box-body">
                         <div class="row">
@@ -34,8 +34,8 @@
                   					<dd>{{{ $ticket->category()->first()->title }}}</dd>
                   				</dl>
                               <dl>
-                                 <dt>{{{trans('Creation date')}}}</dt>
-                                 <dd>{{{ $ticket->created_at }}}</dd>
+                                 <dt>{{{ trans('Author') }}}</dt>
+                                 <dd>{{{ $ticket->author_email }}}</dd>
                               </dl>
                            </div>
                            <div class="col-md-6">
@@ -50,8 +50,8 @@
                                  </dd>
                               </dl>
                               <dl>
-                                 <dt>{{{ trans('Author') }}}</dt>
-                                 <dd>{{{ $ticket->author_email }}}</dd>
+                                 <dt>{{{ trans('Assigned to') }}}</dt>
+                                 <dd>{{{ $ticket->owner->email }}}</dd>
                               </dl>
                            </div>
             				</div>
@@ -64,16 +64,34 @@
                      </div>
                      <div class="box-body">
                         @if ($ticket->open)
+                           <div class="row">
+                           <div class="col-md-4"> 
                            {{ Form::open(array('url' => 'tickets/close', 'novalidate' => '', 'name' => 'form')) }}
                            {{ Form::hidden('id', $ticket->id) }}
+                           <div class="form-group">
                            {{ Form::submit(trans('Close ticket'), array('class' => 'btn btn-danger')) }}
+                           </div>
                            {{ Form::close()}}
-                        @else
-                           {{ Form::open(array('url' => 'tickets/open', 'novalidate' => '', 'name' => 'form')) }}
+                           </div>
+                           
+                           {{ Form::open(array('url' => 'tickets/change', 'novalidate' => '', 'name' => 'formowner')) }}
                            {{ Form::hidden('id', $ticket->id) }}
-                           {{ Form::submit(trans('Reopen ticket'), array('class' => 'btn btn-success')) }}
-                           {{ Form::close()}} 
-                        @endif                       
+                           <div class="col-md-4"> 
+                           <div class="form-group">
+                              {{Form::select('owner', $owners, 1, array('class' => 'form-control'))}}
+                           </div>
+                           </div>
+                           <div class="col-md-4"> 
+                              {{ Form::submit(trans('Change owner'), array('class' => 'btn btn-success')) }}
+                           </div>
+                           {{ Form::close()}}
+                           </div>
+                           @else
+                              {{ Form::open(array('url' => 'tickets/open', 'novalidate' => '', 'name' => 'form')) }}
+                              {{ Form::hidden('id', $ticket->id) }}
+                              {{ Form::submit(trans('Reopen ticket'), array('class' => 'btn btn-success')) }}
+                              {{ Form::close()}}
+                           @endif                       
                      </div>
                   </div>
                   @endif
@@ -88,9 +106,9 @@
                         @if (count($comments))
                            @foreach ($comments as $comment)
                               <div class="item">
-                                 <img src="{{asset('img/avatar.png')}}" alt="">
+                                 <img src="{{ getAvatar($comment->author_email) }}" alt="">
                                  <p class="message">
-                                    <span class="name">{{$comment->author_email}}</span>
+                                    <span class="name">{{$comment->author_email}} <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> {{$comment->created_at}}</small></span>
                                     {{$comment->description}}
                                  </p>
                               </div>
@@ -126,6 +144,7 @@
                   </div>
                </div>
          </section>
+         
 @stop
 @section('angular')
 <script>

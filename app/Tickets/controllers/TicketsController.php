@@ -56,8 +56,13 @@ class TicketsController extends \BaseController {
 	* Show a ticket
 	*/
 	public function getShow($code) {
+		$owner_select_box = array();
+		$ticketOperators = \User::withRole('tickets operator')->get();
+		foreach ($ticketOperators as $operator) {
+			$owner_select_box[$operator->id] = $operator->email;
+		}
 		$ticket = Models\Ticket::with('comments')->where('code', '=', $code)->firstOrFail();
-		return \View::make('tickets.show')->with(array('ticket' => $ticket));
+		return \View::make('tickets.show')->with(array('ticket' => $ticket, 'owners' => $owner_select_box));
 	}
 
 	/**
@@ -134,11 +139,33 @@ class TicketsController extends \BaseController {
 	}
 
 	/**
+	* change the ticket owner
+	*/
+	public function postChange()
+	{
+		$ticket = Models\Ticket::find(\Input::get('id'));
+		if ($ticket->isManager())
+		{
+			$user = \User::find(\Input::get('owner'));
+			$ticket->owner()->associate($user);
+			$ticket->save();
+			return \Redirect::back();
+		} else {
+			return \Redirect::back()->with('error', trans('You are not authorized to manage this ticket'));
+		}
+	}
+
+	/**
 	* With this funcione everyone can see the ticket, also guest users (@TODO: verify)
 	*/
 	public function getCode($code, $email = false) {
+		$owner_select_box = array();
+		$ticketOperators = \User::withRole('tickets operator')->get();
+		foreach ($ticketOperators as $operator) {
+			$owner_select_box[$operator->id] = $operator->email;
+		}
 		$ticket = Models\Ticket::with('comments')->where('code', '=', $code)->firstOrFail();
-		return \View::make('tickets.show')->with(array('ticket' => $ticket, 'email' => $email));
+		return \View::make('tickets.show')->with(array('ticket' => $ticket, 'email' => $email, 'owners' => $owner_select_box));
 	}
 
 }
