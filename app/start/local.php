@@ -11,6 +11,14 @@ Tickets\Models\Ticket::updated(function($ticket)
 	});
 });
 
+Tickets\Models\Ticket::created(function($ticket)
+{
+    Mail::send('emails.tickets.updated', array('ticket' => $ticket), function($message) use ($ticket){
+		$message->to($ticket->owner->email, $ticket->owner->email)
+		->subject(sprintf(trans('New Ticket %s from help desk'), $ticket->code));
+	});
+});
+
 
 Tickets\Models\TicketComment::created(function($ticketComment)
 {
