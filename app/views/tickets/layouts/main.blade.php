@@ -99,6 +99,9 @@
                         <li>
                             <a href="{{url('tickets')}}"><i class="fa fa-envelope"></i><span>Tickets</span></a>
                         </li>
+                        <li>
+                            <a href="{{url('tickets/create')}}"><i class="fa fa-file-text-o"></i><span>New Ticket</span></a>
+                        </li>
                     @else
                         <li><a href="{{url('login')}}"><i class="fa fa-sign-in"></i><span>{{trans('Log in')}}</span></a></li>
                         <li><a href="{{url('signup')}}"><i class="fa fa-user"></i><span>{{trans('Register')}}</span></a></li>

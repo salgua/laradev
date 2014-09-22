@@ -35,7 +35,7 @@ class TicketsController extends \BaseController {
 	public function getIndex() {
 		$tickets = Models\Ticket::involvedUser(\Auth::user())
 					->orderBy('open', 'desc')
-					->orderBy('created_at', 'asc')
+					->orderBy('created_at', 'desc')
 					->get();
 		return \View::make('tickets.index')->with('tickets', $tickets);
 	}
@@ -51,6 +51,20 @@ class TicketsController extends \BaseController {
 		}
 		return \View::make('tickets.guest')->with('categories', $categories_select_box);
 	}
+
+	/**
+	* Create new ticket - for auth users
+	*/
+	public function getCreate() {
+		$categories = Models\TicketCategory::all();
+		$categories_select_box = array();
+		foreach ($categories as $category) {
+			$categories_select_box[$category->id] = $category->title;
+		}
+		return \View::make('tickets.create')->with('categories', $categories_select_box);
+	}
+
+
 
 	/**
 	* Show a ticket
