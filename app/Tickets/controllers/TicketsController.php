@@ -44,7 +44,7 @@ class TicketsController extends \BaseController {
 	* Show the guest submit ticket form
 	*/
 	public function getGuest() {
-		$categories = Models\TicketCategory::all();
+		$categories = Models\TicketCategory::orderBy('position')->get();
 		$categories_select_box = array();
 		foreach ($categories as $category) {
 			$categories_select_box[$category->id] = $category->title;
@@ -56,7 +56,7 @@ class TicketsController extends \BaseController {
 	* Create new ticket - for auth users
 	*/
 	public function getCreate() {
-		$categories = Models\TicketCategory::all();
+		$categories = Models\TicketCategory::orderBy('position')->get();
 		$categories_select_box = array();
 		foreach ($categories as $category) {
 			$categories_select_box[$category->id] = $category->title;
