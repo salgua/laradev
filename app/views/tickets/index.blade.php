@@ -60,3 +60,11 @@
 	</div>
 </section>
 @stop
+@section('angular')
+<script>
+    var app = angular.module('app', ['ui.utils', 'remoteValidation']);
+    app.controller('MainCtrl', ['$scope', '$http', function($scope, $http) {
+        
+    }]);
+</script>
+@stop

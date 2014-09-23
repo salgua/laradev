@@ -19,7 +19,9 @@
 			"app/database/seeds",
 			"app/tests/TestCase.php",
 			"app/Tickets/controllers",
-			"app/Tickets/models"
+			"app/Tickets/models",
+			"app/Admin/controllers",
+			"app/Admin/models"
 		],
 		"files": [
 			"app/helpers.php",
