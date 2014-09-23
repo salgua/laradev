@@ -39,6 +39,12 @@
                             	<label for="description">{{{ trans('Description') }}} *</label>
                             	{{ Form::textarea('description', '', array('class' => 'form-control', 'required' => '', 'ng-model' => 'description', 'rows' => '3')) }}
                             </div>
+                                <div class="checkbox-agreement">
+                                    <label> 
+                                    {{ Form::checkbox('agreement', 'ok', false, array('id' => 'agreement', 'required' => '', 'ng-model' => 'agreement.checked')) }} &nbsp;
+                                        {{ trans('I agree to the treatment of my personal data') }}
+                                    </label>
+                                </div>
          				</div>
          				<div class="box-footer">
                             {{Form::submit(trans('Submit'), array('class' => 'btn btn-primary', 'ng-disabled' => 'ticketform.$invalid'))}}
