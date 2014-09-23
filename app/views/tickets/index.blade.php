@@ -15,7 +15,7 @@
 				<div class="box-header">
          			<h3 class="box-title">{{trans('My tickets')}}</h3>
          		</div>
-         		<div class="box-body">
+         		<div class="box-body table-responsive">
                   @if (count($tickets))
          			<table class="table table-bordered">
          				<tbody>
