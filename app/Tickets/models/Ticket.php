@@ -42,6 +42,20 @@ class Ticket extends \Eloquent {
 	}
 
 	/**
+	*@return: screen name of the author, if exist else email
+	*/
+	public function getAuthorScreenName()
+	{
+		$author = \User::whereEmail($this->author_email)->first();
+		if ($author)
+		{
+			return $author->getScreenName();
+		}
+		return $this->author_email;
+	}
+
+
+	/**
 	* Check if a user is a mangager of a ticket
 	*/
 	public function isManager()

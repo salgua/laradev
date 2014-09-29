@@ -51,7 +51,7 @@
                               </dl>
                               <dl>
                                  <dt>{{{ trans('Assigned to') }}}</dt>
-                                 <dd>{{{ $ticket->owner->email }}}</dd>
+                                 <dd>{{{ $ticket->owner->getScreenName() }}}</dd>
                               </dl>
                            </div>
             				</div>
@@ -108,7 +108,7 @@
                               <div class="item">
                                  <img src="{{ getAvatar($comment->author_email) }}" alt="">
                                  <p class="message">
-                                    <span class="name">{{$comment->author_email}} <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> {{$comment->created_at}}</small></span>
+                                    <span class="name">{{$comment->getAuthorScreenName()}} <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> {{$comment->created_at}}</small></span>
                                     {{$comment->description}}
                                  </p>
                               </div>

@@ -36,6 +36,19 @@ class TicketComment extends \Eloquent {
 	public function parent()
 	{
 		return $this->belongsTo('Tickets\Models\TicketComment', 'parent_id');
+	}
+
+	/**
+	*@return: screen name of the author, if exist else email
+	*/
+	public function getAuthorScreenName()
+	{
+		$author = \User::whereEmail($this->author_email)->first();
+		if ($author)
+		{
+			return $author->getScreenName();
+		}
+		return $this->author_email;
 	}	
 
 }

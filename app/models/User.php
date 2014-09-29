@@ -51,6 +51,19 @@ class User extends Eloquent implements UserInterface, RemindableInterface {
 	}
 
 	/**
+	*@return: the screen name of the user
+	*/
+	public function getScreenName()
+	{
+		if ($this->screen_name)
+		{
+			return $this->screen_name;
+		}
+
+		return $this->email;
+	}
+
+	/**
 	* Tickets Module relations
 	*/
 

@@ -38,7 +38,7 @@
          							<td>{{$ticket->author_email}}</td>
          							<td>{{$ticket->subject}}</td>
          							<td>{{$ticket->category()->first()->title}}</td>
-         							<td>{{$ticket->owner()->first()->email}}</td>
+         							<td>{{$ticket->owner->getScreenName()}}</td>
          							<td>@if ($ticket->open)
                                           <span class="text-green">{{ trans('open') }}</span>
                                        @else
