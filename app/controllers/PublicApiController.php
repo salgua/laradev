@@ -25,6 +25,7 @@ class PublicApiController extends BaseController {
 	public function getIndex()
 	{
 		return "Laradev Public API v0.1";
+		//return Purifier::clean('This is my <strong>H1</strong> title');
 	}
 
 	/**
