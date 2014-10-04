@@ -11,7 +11,7 @@
 				<li>{{ trans('Author email') }}: {{$ticket->author_email }}</li>
 				<li>{{ trans('Subjet') }}: {{$ticket->subject }}</li>
 				<li>{{ trans('Category') }}: {{$ticket->category->title }}</li>
-				<li>{{ trans('Assigned to') }}: {{$ticket->owner->email }}</li>
+				<li>{{ trans('Assigned to') }}: {{$ticket->owner->getScreenName() }}</li>
 				<li>{{ trans('Status') }}: 
 						@if ($ticket->open)
                         	<span style="color: green">{{ trans('open') }}</span>
@@ -30,7 +30,7 @@
 					<li>{{ trans('Created at')}}: {{$comment->created_at}}</li>
 
 				</ul>
-				<p>{{{$comment->description}}}</p>
+				<p>{{$comment->description}}</p>
 			@endif
 			<p>{{trans('You can view the ticket at the following url')}}: {{ URL::to('tickets/code', array($ticket->code)) }}</p>
 		</div>

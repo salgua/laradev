@@ -28,6 +28,31 @@ class TicketComment extends \Eloquent {
 
 	protected $touches = array('ticket');
 
+	public static function boot()
+	{
+		parent::boot();
+
+		//Purify the HTML description on comment creating or updating
+		TicketComment::creating(function($comment){
+			$comment->description = \Purifier::clean($comment->description);
+		});
+
+		TicketComment::updating(function($comment){
+			$comment->description = \Purifier::clean($comment->description);
+		});
+
+		//send notifications on comment create
+		TicketComment::created(function($ticketComment)
+		{
+			$ticket = $ticketComment->ticket()->get()->first();
+		    \Mail::send('emails.tickets.updated', array('ticket' => $ticket), function($message) use ($ticket){
+				$message->to($ticket->author_email, $ticket->author_email)
+				->cc($ticket->owner->email, $ticket->owner->email)
+				->subject(sprintf(trans('Ticket %s updated'), $ticket->code));
+			});
+		});
+	}
+
 	public function ticket()
 	{
 		return $this->belongsTo('Tickets\Models\Ticket', 'ticket_id');

@@ -23,8 +23,10 @@
                               </dl>
                               <dl>
                                  <dt>{{{trans('Description')}}}</dt>
-                                 <dd>{{{ $ticket->description }}}</dd>
                               </dl>
+                              <div class="ticket-description">
+                                 {{ $ticket->description }}
+                              </div>
                            </div>
                         </div>
             				<div class="row">
@@ -107,10 +109,10 @@
                            @foreach ($comments as $comment)
                               <div class="item">
                                  <img src="{{ getAvatar($comment->author_email) }}" alt="">
-                                 <p class="message">
+                                 <div class="message">
                                     <span class="name">{{$comment->getAuthorScreenName()}} <small class="text-muted pull-right"><i class="fa fa-clock-o"></i> {{$comment->created_at}}</small></span>
                                     {{$comment->description}}
-                                 </p>
+                                 </div>
                               </div>
                            @endforeach
                         @else
@@ -125,7 +127,7 @@
 
                                  <div class="form-group">
                                     <label for="description">{{{ trans('Comment') }}} *</label>
-                                    {{ Form::textarea('description', '', array('class' => 'form-control', 'required' => '', 'ng-model' => 'description', 'rows' => '2')) }}
+                                    {{ Form::textarea('description', '', array('class' => 'textarea', 'style' => 'width: 100%; height: 100px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;')) }}
                                   </div>
                               {{Form::submit(trans('Submit'), array('class' => 'btn btn-primary', 'ng-disabled' => 'form.$invalid'))}}
                            </div>
@@ -148,6 +150,7 @@
 @stop
 @section('angular')
 <script>
+   $(".textarea").wysihtml5({"font-styles": false});
     var app = angular.module('app', ['ui.utils', 'remoteValidation']);
     app.controller('MainCtrl', ['$scope', '$http', function($scope, $http) {
         

@@ -32,7 +32,7 @@
                             </div>
                             <div class="form-group">
                             	<label for="description">{{{ trans('Description') }}} *</label>
-                            	{{ Form::textarea('description', '', array('class' => 'form-control', 'required' => '', 'ng-model' => 'description', 'rows' => '3')) }}
+                                {{ Form::textarea('description', '', array('class' => 'textarea', 'style' => 'width: 100%; height: 200px; font-size: 14px; line-height: 18px; border: 1px solid #dddddd; padding: 10px;')) }}
                             </div>
          				</div>
          				<div class="box-footer">
@@ -47,9 +47,11 @@
 
 @section('angular')
 <script>
+    $(".textarea").wysihtml5({"font-styles": false});
     var app = angular.module('app', ['ui.utils', 'remoteValidation']);
     app.controller('MainCtrl', ['$scope', '$http', function($scope, $http) {
-    	$scope.category = 1;
+    	$scope.category = '<?php echo Input::old("category", 1); ?>';
+        $scope.subject = '<?php echo Input::old("subject"); ?>';
     }]);
 </script>
 @stop

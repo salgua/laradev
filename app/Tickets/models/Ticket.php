@@ -26,6 +26,45 @@ class Ticket extends \Eloquent {
 
 	protected $table = 'tickets';
 
+	public static function boot()
+	{
+		parent::boot();
+
+		//Purify the HTML description o ticket creating or updating
+		Ticket::creating(function($ticket){
+			$ticket->description = \Purifier::clean($ticket->description);
+			$validator = \Validator::make(
+				array('description' => $ticket->description),
+				array('description' => 'required')
+			);
+			if ($validator->fails())
+			{
+				return false;
+			}
+		});
+		Ticket::updating(function($ticket){
+			$ticket->description = \Purifier::clean($ticket->description);
+		});
+
+		//Send notifications on ticket create and update
+		Ticket::updated(function($ticket)
+		{
+		    \Mail::send('emails.tickets.updated', array('ticket' => $ticket), function($message) use ($ticket){
+				$message->to($ticket->author_email, $ticket->author_email)
+				->cc($ticket->owner->email, $ticket->owner->email)
+				->subject(sprintf(trans('Ticket %s updated'), $ticket->code));
+			});
+		});
+
+		Ticket::created(function($ticket)
+		{
+		    \Mail::send('emails.tickets.updated', array('ticket' => $ticket), function($message) use ($ticket){
+				$message->to($ticket->owner->email, $ticket->owner->email)
+				->subject(sprintf(trans('New Ticket %s from help desk'), $ticket->code));
+			});
+		});
+	}
+
 	public function category()
 	{
 		return $this->belongsTo('Tickets\Models\TicketCategory', 'category_id');

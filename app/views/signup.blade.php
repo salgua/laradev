@@ -11,7 +11,8 @@
                             <span ng-show="signupform.email.$error.ngRemoteValidate" class="help-block">{{trans('The email address is already registered, ').link_to('login', trans('log in'))}}</span>
                         </div>
                         <div class="form-group has-feedback" ng-class="{ 'has-error': signupform.password.$invalid && signupform.password.$dirty }">
-                            <input name="password" type="password" class="form-control" placeholder="Password" required ng-model="password">
+                            <input name="password" type="password" class="form-control" placeholder="Password" required ng-model="password" minlength="8">
+                            <span ng-show="signupform.password.$invalid && signupform.password.$dirty" class="help-block">{{trans('Password should have at least 8 characters')}}</span>
                         </div>
                         <div class="form-group has-feedback" ng-class="{ 'has-error': signupform.password_confirmation.$invalid && signupform.password_confirmation.$dirty }">
                             <input name="password_confirmation" type="password" class="form-control" placeholder="{{ trans('Retype password') }}" required ng-model="password_confirmation" ui-validate=" '$value==password' " ui-validate-watch=" 'password' ">

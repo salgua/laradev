@@ -99,6 +99,9 @@ class TicketsController extends \BaseController {
     						$message->to($ticket->author_email, $ticket->author_email)->subject(trans('Thank you for your ticket submission'));
     					});
 		return \Redirect::back()->with('status', trans('Thank you for your submission. We will answer you as soon as possible.'));	
+		} else {
+			return \Redirect::back()->with('error', trans('Please compile all required fields'))
+			->withInput(\Input::except('password', 'password_confirm'));
 		}
 	}
 
