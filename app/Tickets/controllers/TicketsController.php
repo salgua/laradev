@@ -36,7 +36,7 @@ class TicketsController extends \BaseController {
 		$tickets = Models\Ticket::involvedUser(\Auth::user())
 					->orderBy('open', 'desc')
 					->orderBy('created_at', 'desc')
-					->get();
+					->paginate(15);
 		return \View::make('tickets.index')->with('tickets', $tickets);
 	}
 

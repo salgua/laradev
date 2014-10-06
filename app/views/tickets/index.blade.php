@@ -53,6 +53,7 @@
                   @else
                   <p>{{{trans("You don't have any tickets")}}}</p>
                   @endif
+                  {{$tickets->links()}}
          		</div>
 			</div>
 
