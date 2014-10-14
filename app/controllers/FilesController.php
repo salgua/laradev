@@ -9,8 +9,8 @@ class FilesController extends \BaseController {
 	 */
 	public function index()
 	{
-		$file_repository = storage_path()."files/";
-		echo $file_repository;
+		$file_repository = storage_path()."/files/";
+		return $file_repository;
 	}
 
 
@@ -21,7 +21,7 @@ class FilesController extends \BaseController {
 	 */
 	public function create()
 	{
-		//
+		return View::make('files.create');
 	}
 
 
@@ -32,13 +32,26 @@ class FilesController extends \BaseController {
 	 */
 	public function store()
 	{
-		$file_repository = storage_path()."files/";
-		if (Input::file('photo')->isValid())
+		$file_repository = Config::get('media.file-repository');
+		if (Input::file('attachment')->isValid())
 			{
 			    $user = Auth::user();
-
+			    $file = new Media;
+			    $file->title = Input::file('attachment')->getClientOriginalName();
+			    $file->extension = Input::file('attachment')->getClientOriginalExtension();
+			    $file->size = Input::file('attachment')->getSize();
+			    $file->mime = Input::file('attachment')->getMimeType();
+			    $filename = str_random(12).".".$file->extension;
+			    $file->author()->associate($user);
+			    if (Input::file('attachment')->move($file_repository, $filename))
+			    {
+			    	$file->path = $filename;
+			    	$file->save();
+			    	return Response::json('success', 200);
+			    } else {
+			    	return Response::json('error', 400);
+			    }
 			}
-		
 	}
 
 
@@ -50,7 +63,11 @@ class FilesController extends \BaseController {
 	 */
 	public function show($id)
 	{
-		//
+		$file_repository = Config::get('media.file-repository');
+		$file = Media::find($id);
+		$headers = array('Content-Type: '.$file->mime);
+		return Response::download($file_repository.$file->path, $file->title, $headers);
+		
 	}
 
 

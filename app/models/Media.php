@@ -1,7 +1,9 @@
 <?php
 
-class File extends \Eloquent {
+class Media extends \Eloquent {
 	protected $fillable = [];
+
+	protected $table = 'files';
 
 	public static function boot()
 	{

@@ -18,6 +18,9 @@ class CreateFilesTable extends Migration {
 			$table->string('title');
 			$table->string('path');
 			$table->integer('author_id')->unsigned()->nullable();
+			$table->integer('size');
+			$table->string('mime');
+			$table->string('extension');
 			$table->timestamps();
 			//add foreign key
 			$table->foreign('author_id')->references('id')->on('users')->onDelete('set null');
