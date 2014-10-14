@@ -22,51 +22,120 @@
 ?>
 <!DOCTYPE html>
 <html>
-	<head>
-		<meta charset="UTF-8">
-		<title>{{{ Config::get('tickets.title') }}}</title>
-		<meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
-		{{ HTML::style('css/bootstrap.min.css') }}
-		{{ HTML::style('css/font-awesome.min.css') }}
-		{{ HTML::style('css/ionicons.min.css') }}
-		{{ HTML::style('css/morris/morris.css') }}
-		{{-- HTML::style('css/jvectormap/jquery-jvectormap-1.2.2.css') --}}
-		{{ HTML::style('css/datepicker/datepicker3.css'); }}
-		{{ HTML::style('css/daterangepicker/daterangepicker-bs3.css'); }}
-		{{ HTML::style('css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css'); }}
-		{{ HTML::style('css/AdminLTE.css'); }}
+    <head>
+        <meta charset="UTF-8">
+        <title>{{{ Config::get('tickets.title') }}}</title>
+        <meta content='width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no' name='viewport'>
+        <meta name="robots" content="noindex">
+        {{ HTML::style('css/bootstrap.min.css') }}
+        {{ HTML::style('css/font-awesome.min.css') }}
+        {{ HTML::style('css/ionicons.min.css') }}
+        {{ HTML::style('css/morris/morris.css') }}
+        {{-- HTML::style('css/jvectormap/jquery-jvectormap-1.2.2.css') --}}
+        {{ HTML::style('css/datepicker/datepicker3.css'); }}
+        {{ HTML::style('css/daterangepicker/daterangepicker-bs3.css'); }}
+        {{ HTML::style('css/bootstrap-wysihtml5/bootstrap3-wysihtml5.min.css'); }}
+        {{ HTML::style('css/AdminLTE.css'); }}
+        {{ HTML::style('css/custom.css'); }}
         @yield('custom_css')
-		<!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
+        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
         <![endif]-->
-	</head>
-	<body class="{{{isset($bodyClass) ? $bodyClass : 'skin-black'}}}">
-        @yield('header')
-        {{-- Flashing error and status message message --}}
-        @if (Session::get('error'))
-            <div class="alert alert-danger alert-dismissable">
-                <i class="fa fa-ban"></i>
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                {{{ Session::get('error') }}}
-            </div>
-        @endif
+    </head>
+    <body class="{{{isset($bodyClass) ? $bodyClass : 'skin-black'}}}">
+        <header class="header">
+            <a href="/" class="logo">{{{ Config::get('tickets.title') }}}</a>
+            <nav class="navbar navbar-static-top" role="navigation">
+                <!-- Sidebar toggle button-->
+                <a href="#" class="navbar-btn sidebar-toggle" data-toggle="offcanvas" role="button">
+                    <span class="sr-only">Toggle navigation</span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                    <span class="icon-bar"></span>
+                </a>
+                <div class="navbar-right">
+                    <ul class="nav navbar-nav">
+                        @if (Auth::check())
+                            <!-- User Account: style can be found in dropdown.less -->
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <i class="glyphicon glyphicon-user"></i>
+                                        <span>{{ Auth::user()->email }} <i class="caret"></i></span>
+                                </a>
+                                <ul class="dropdown-menu">
+                                    <!-- Menu Body -->
+                                    <li class="user-body">
+                                        <div class="col-xs-12 text-center">
+                                            {{ link_to('tickets', trans('Tickets')) }}
+                                        </div>
+                                    </li>
+                                    <!-- Menu Footer-->
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <!-- a href="#" class="btn btn-default btn-flat">Profile</a -->
+                                        </div>
+                                        <div class="pull-right">
+                                            {{ link_to('logout', trans('Sign out'), array('class' => 'btn btn-default btn-flat')) }}
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        @else
+                            <li>{{link_to('login', trans('login'))}}</li>
+                            <li>{{link_to('signup', trans('register'))}}</li>
+                        @endif
+                    </ul>
+                </div>
+            </nav>
+        </header>
+        <div class="wrapper row-offcanvas row-offcanvas-left">
+            <aside class="left-side sidebar-offcanvas">
+                <section class="sidebar">
+                    <ul class="sidebar-menu">
+                        <li>
+                            <a href="{{url('admin/users')}}"><i class="fa fa-users"></i><span>Users</span></a>
+                        </li>
+                    </ul>
+                </section>
+            </aside>
+            <aside class="right-side">
+                {{-- Flashing error and status message message --}}
+                @if (Session::get('error'))
+                    <div class="content">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-danger alert-dismissable alert-top">
+                                    <i class="fa fa-ban"></i>
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{{ Session::get('error') }}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
-        @if (Session::get('status'))
-            <div class="alert alert-info alert-dismissable">
-                <i class="fa fa-info"></i>
-                <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                {{{ Session::get('status') }}}
-            </div>
-        @endif
+                @if (Session::get('status'))
+                    <div class="content">
+                        <div class="row">
+                            <div class="col-md-12">
+                                <div class="alert alert-info alert-dismissable alert-top">
+                                    <i class="fa fa-info"></i>
+                                    <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
+                                    {{{ Session::get('status') }}}
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                @endif
 
-		<div class="wrapper">
-			@yield('content')
-		</div>
-		<!-- jQuery 2.0.2 -->
-		{{ HTML::script('bower_components/jquery/dist/jquery.min.js') }}
+                @yield('content')
+            </aside>
+        </div>
+        <!-- jQuery 2.0.2 -->
+        {{ HTML::script('bower_components/jquery/dist/jquery.min.js') }}
         <!-- jQuery UI 1.10.3 -->
         {{ HTML::script('js/jquery-ui-1.10.3.min.js') }}
         <!-- Bootstrap -->
@@ -103,5 +172,5 @@
                 //$data = Session::all();
                 //var_dump($data);
             ?>
-	</body>
+    </body>
 </html>

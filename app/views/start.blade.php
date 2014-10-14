@@ -1,4 +1,4 @@
-@extends('admin.layouts.main')
+@extends('layouts.main')
 @section('custom_css')
 	<style>
 		@import url(//fonts.googleapis.com/css?family=Lato:700);

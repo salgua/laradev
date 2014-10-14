@@ -122,6 +122,7 @@ return array(
 		'Illuminate\View\ViewServiceProvider',
 		'Illuminate\Workbench\WorkbenchServiceProvider',
 		'Mews\Purifier\PurifierServiceProvider',
+		'Way\Generators\GeneratorsServiceProvider'
 	),
 
 	/*

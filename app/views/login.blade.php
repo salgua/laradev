@@ -1,4 +1,4 @@
-@extends('admin.layouts.main')
+@extends('layouts.main')
 @section('content')
         <div ng-app="app">
     		<div class="form-box" id="login-box" ng-controller="MainCtrl as main">

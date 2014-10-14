@@ -25,14 +25,16 @@ use Tickets\Models as Models;
 
 class TicketsController extends \BaseController {
 
-	public function __construct() {
+	public function __construct() 
+	{
         $this->beforeFilter('csrf', array('on' => 'post'));
     }
 	
 	/**
 	* Show all tickets regarding a user. If the user has the ticket manager role, display all tickets
 	*/
-	public function getIndex() {
+	public function getIndex() 
+	{
 		$tickets = Models\Ticket::involvedUser(\Auth::user())
 					->orderBy('open', 'desc')
 					->orderBy('created_at', 'desc')

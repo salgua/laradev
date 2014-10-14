@@ -62,7 +62,9 @@ class CreateTicketsTables extends Migration {
 	 */
 	public function down()
 	{
-		//
+        Schema::drop('tickets');
+        Schema::drop('tickets_categories');
+        Schema::drop('tickets_comments');
 	}
 
 }

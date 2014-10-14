@@ -44,7 +44,8 @@ Route::controller('api', 'PublicApiController');
 */
 Route::group(array('prefix' => 'admin', 'before' => 'administrator'), function()
 {
-	Route::get('/', 'Admin\Controllers\DashboardController@index');
+	//Route::get('/', 'Admin\Controllers\DashboardController@index');
+	Route::controller('/', 'Admin\Controllers\AdminController');
 });
 
 /**
@@ -52,4 +53,12 @@ Route::group(array('prefix' => 'admin', 'before' => 'administrator'), function()
 */
 Route::group(array('prefix' => 'tickets', 'before' => 'tickets'), function(){
 	Route::controller('/', 'Tickets\Controllers\TicketsController');
+});
+
+/**
+* Files routes
+* Only auth users can manage files
+*/
+Route::group(array('before'=>'auth'), function() {   
+    Route::resource('files', 'FilesController');
 });
