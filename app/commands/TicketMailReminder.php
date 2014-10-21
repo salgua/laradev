@@ -40,11 +40,15 @@ class TicketMailReminder extends Command {
 	public function fire()
 	{
 		$interval = intval($this->option('days'), 10);
-		echo "I'm about to send a reminder for all tickets more than ".$interval." days old.\n";
+		if (!$this->option('lazy')) {
+			echo "I'm about to send a reminder for all tickets more than ". $interval." ".
+			($interval == 1 ? "day" : "days").
+			" old.\n";
+		}
 		$tickets = Models\Ticket::where('created_at', '<', Carbon::now()->subDays($interval))
 								->where('open', '=', 1)
 								->get();
-		if ($this->option('list')) {
+		if ($this->option('list') OR $this->option('lazy')) {
 			echo "I found ".count($tickets)." tickets:\n";
 			foreach ($tickets as $ticket) {
 				echo "ID: ".$ticket->id.
@@ -54,6 +58,9 @@ class TicketMailReminder extends Command {
 				", Days passed: ".Carbon::now()->diffInDays($ticket->created_at).
 				"\n";
 			}
+		}
+		foreach ($tickets as $ticket) {
+
 		}
 	}
 
@@ -79,6 +86,7 @@ class TicketMailReminder extends Command {
 		return array(
 			array('days', 'd', InputOption::VALUE_OPTIONAL, 'How many days must have passed to fire a notificantion email.', 7),
 			array('list', 'l', InputOption::VALUE_NONE, 'Prints the ids of the ticket that are being mailed.', null),
+			array('lazy', 'L', InputOption::VALUE_NONE, 'Prints the infos, but doesn\'t send the mails.', null),
 		);
 	}
 
