@@ -47,7 +47,12 @@ class TicketMailReminder extends Command {
 		if ($this->option('list')) {
 			echo "I found ".count($tickets)." tickets:\n";
 			foreach ($tickets as $ticket) {
-				echo "ID: ".$ticket->id.", Code: ".$ticket->code.", Subject: ".$ticket->subject.", Assigned to: ".$ticket->assigned_to.", Days passed: ".Carbon::now()->diffInDays($ticket->created_at)."\n";
+				echo "ID: ".$ticket->id.
+				", Code: ".$ticket->code.
+				", Subject: ".$ticket->subject.
+				", Assigned to: ".$ticket->assigned_to.
+				", Days passed: ".Carbon::now()->diffInDays($ticket->created_at).
+				"\n";
 			}
 		}
 	}
