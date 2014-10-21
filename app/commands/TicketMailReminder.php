@@ -39,17 +39,31 @@ class TicketMailReminder extends Command {
 	 */
 	public function fire()
 	{
-		$interval = intval($this->option('days'), 10);
+		// It assignes the input value for the day range converting it to an int.
+		$interval = intval($this->option('days'));
+
+		/* It gives feedback about:
+		*	- If it's going to send the emails.
+		*	- The ammount of days condidered specified via input or by default value. 
+		*/ 
 		if (!$this->option('lazy')) {
-			echo "I'm about to send a reminder for all tickets more than ". $interval." ".
+			echo "I'm about to send a reminder to all open tickets more than ". $interval." ".
+			($interval == 1 ? "day" : "days").
+			" old.\n";
+		} else {echo "Searching for open tickets over ". $interval." ".
 			($interval == 1 ? "day" : "days").
 			" old.\n";
 		}
+
+		// This is the database query, for tickets older than $interval and still open.
 		$tickets = Models\Ticket::where('created_at', '<', Carbon::now()->subDays($interval))
 								->where('open', '=', 1)
 								->get();
+
+		// It gives feedback about the status of the old and open tickets.
+		$ammount = count($tickets);
 		if ($this->option('list') OR $this->option('lazy')) {
-			echo "I found ".count($tickets)." tickets:\n";
+			echo "I found ".$ammount." ".($ammount == 1 ? "ticket" : "tickets").":\n";
 			foreach ($tickets as $ticket) {
 				echo "ID: ".$ticket->id.
 				", Code: ".$ticket->code.
@@ -59,9 +73,14 @@ class TicketMailReminder extends Command {
 				"\n";
 			}
 		}
-		foreach ($tickets as $ticket) {
 
+		// This will send an email for each old open ticket.
+		if (!$this->option('lazy')) {
+			foreach ($tickets as $ticket) {
+
+			}
 		}
+
 	}
 
 	/**
@@ -71,9 +90,7 @@ class TicketMailReminder extends Command {
 	 */
 	protected function getArguments()
 	{
-		return array(
-			//array('days', InputArgument::REQUIRED, 'How many days must have passed to fire a notificantion email.', 7),
-		);
+		return array();
 	}
 
 	/**
