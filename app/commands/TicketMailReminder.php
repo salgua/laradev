@@ -41,11 +41,15 @@ class TicketMailReminder extends Command {
 	{
 		$interval = intval($this->option('days'), 10);
 		echo "I'm about to send a reminder for all tickets more than ".$interval." days old.\n";
-		$tickets = Models\Ticket::where('created_at', '<', Carbon::now()->subDays($interval))->where('open', '=', 1)->get();
+		$tickets = Models\Ticket::where('created_at', '<', Carbon::now()->subDays($interval))
+								->where('open', '=', 1)
+								->get();
 		if ($this->option('list')) {
 			echo "I found ".count($tickets)." tickets:\n";
+			foreach ($tickets as $ticket) {
+				echo "ID: ".$ticket->id.", Code: ".$ticket->code.", Subject: ".$ticket->subject.", Assigned to: ".$ticket->assigned_to.", Days passed: ".Carbon::now()->diffInDays($ticket->created_at)."\n";
+			}
 		}
-		echo $tickets."\n";
 	}
 
 	/**
