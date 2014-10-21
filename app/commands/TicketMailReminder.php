@@ -37,7 +37,11 @@ class TicketMailReminder extends Command {
 	 */
 	public function fire()
 	{
-		//
+		$interval = intval($this->option('days'), 10);
+		echo "I'm about to send a reminder for all tickets more than ".$interval." days old.\n";
+		if ($this->option('list')) {
+			echo "I found X tickets:\n";
+		}
 	}
 
 	/**
@@ -48,7 +52,7 @@ class TicketMailReminder extends Command {
 	protected function getArguments()
 	{
 		return array(
-			array('example', InputArgument::REQUIRED, 'An example argument.'),
+			//array('days', InputArgument::REQUIRED, 'How many days must have passed to fire a notificantion email.', 7),
 		);
 	}
 
@@ -60,7 +64,8 @@ class TicketMailReminder extends Command {
 	protected function getOptions()
 	{
 		return array(
-			array('example', null, InputOption::VALUE_OPTIONAL, 'An example option.', null),
+			array('days', 'd', InputOption::VALUE_OPTIONAL, 'How many days must have passed to fire a notificantion email.', 7),
+			array('list', 'l', InputOption::VALUE_NONE, 'Prints the ids of the ticket that are being mailed.', null),
 		);
 	}
 
