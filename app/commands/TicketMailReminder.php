@@ -11,7 +11,7 @@ class TicketMailRemainder extends Command {
 	 *
 	 * @var string
 	 */
-	protected $name = 'laradev:TicketMailRemainder';
+	protected $name = 'mail:ticket-reminder';
 
 	/**
 	 * The console command description.
