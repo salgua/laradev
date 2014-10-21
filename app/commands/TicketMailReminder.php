@@ -3,6 +3,8 @@
 use Illuminate\Console\Command;
 use Symfony\Component\Console\Input\InputOption;
 use Symfony\Component\Console\Input\InputArgument;
+use Carbon\Carbon;
+use Tickets\Models as Models;
 
 class TicketMailReminder extends Command {
 
@@ -18,7 +20,7 @@ class TicketMailReminder extends Command {
 	 *
 	 * @var string
 	 */
-	protected $description = 'Sends a mail as a reminder for each open ticket older than N days.';
+	protected $description = 'Sends a mail as a reminder for each open ticket older than a certain ammount of days.';
 
 	/**
 	 * Create a new command instance.
@@ -39,9 +41,11 @@ class TicketMailReminder extends Command {
 	{
 		$interval = intval($this->option('days'), 10);
 		echo "I'm about to send a reminder for all tickets more than ".$interval." days old.\n";
+		$tickets = Models\Ticket::where('created_at', '<', Carbon::now()->subDays($interval))->where('open', '=', 1)->get();
 		if ($this->option('list')) {
-			echo "I found X tickets:\n";
+			echo "I found ".count($tickets)." tickets:\n";
 		}
+		echo $tickets."\n";
 	}
 
 	/**
