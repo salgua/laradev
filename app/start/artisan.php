@@ -12,3 +12,4 @@
 */
 
 Artisan::add(new CreateUsers);
+Artisan::add(new TicketMailRemainder);
