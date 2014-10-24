@@ -4,35 +4,15 @@
 		<meta charset="utf-8">
 	</head>
 	<body>
-		<h2>{{ sprintf(trans('Ticket %s updated'), $ticket->code) }}</h2>
+		<h2>{{ sprintf(trans('Hello %s,'), $target->screen_name) }}</h2>
 
 		<div>
-			<ul>
-				<li>{{ trans('Author email') }}: {{$ticket->author_email }}</li>
-				<li>{{ trans('Subjet') }}: {{$ticket->subject }}</li>
-				<li>{{ trans('Category') }}: {{$ticket->category->title }}</li>
-				<li>{{ trans('Assigned to') }}: {{$ticket->owner->getScreenName() }}</li>
-				<li>{{ trans('Status') }}: 
-						@if ($ticket->open)
-                        	<span style="color: green">{{ trans('open') }}</span>
-                        @else
-                            <span style="color: red">{{ trans('closed') }}</span>
-                        @endif
-				</li>
-			</ul>
-		</div>
-		<div>
-			@if (count($ticket->comments()->get()))
-				<h2>{{trans('Last comment')}}</h2>
-				<ul>
-					<?php $comment = $ticket->comments()->orderBy('created_at', 'desc')->first(); ?>
-					<li>{{ trans('Comment author')}}: {{$comment->author_email}}</li>
-					<li>{{ trans('Created at')}}: {{$comment->created_at}}</li>
-
-				</ul>
-				<p>{{$comment->description}}</p>
-			@endif
-			<p>{{trans('You can view the ticket at the following url')}}: {{ URL::to('tickets/code', array($ticket->code)) }}</p>
+			<p>{{ sprintf(trans('There\'s a ticket which has been <span style="color: green">open</span> for %s days!'), $delay) }}</p>
+			<p>{{ trans('We need to respond promply to our customer, else they will go away!') }}</p>
+			<p>{{ trans('You can view the ticket at the following url')}}: {{ URL::to('tickets/code', array($ticket->code)); }}
+			<p>{{ sprintf(trans('The ticket has been sent from %s.'), $ticket->author_email) }}</p>
+			<p>{{ sprintf(trans('With suject: "%s".'), $ticket->subject) }}</p>
+			<p>{{ sprintf(trans('The full content of the message is: %s'), $ticket->description) }}</p></p>
 		</div>
 	</body>
 </html>

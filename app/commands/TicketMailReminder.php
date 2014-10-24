@@ -110,10 +110,11 @@ class TicketMailReminder extends Command {
 				$target = User::where('id', '=', $ticket->assigned_to)->first();
 
 				// Now it has the data to send the email.
-				\Mail::send('emails.ticketMailReminder.report', array('ticket' => $ticket, 'target' => $target), function($message) use($target, $ticket) {
+				$delay = Carbon::now()->diffInDays($ticket->created_at);
+				\Mail::send('emails.ticketMailReminder.reminder', array('ticket' => $ticket, 'target' => $target, 'delay' => $delay), function($message) use($target, $ticket) {
 				    $message
 				    ->to($target->email, $target->screen_name)
-				    ->subject(sprintf(trans('It is %s days that %s is waiting your help!'), Carbon::now()->diffInDays($ticket->created_at), $ticket->author_email));
+				    ->subject(sprintf(trans('It is %s days that %s is waiting for your help!'), Carbon::now()->diffInDays($ticket->created_at), $ticket->author_email));
 				});
 			}
 		}
