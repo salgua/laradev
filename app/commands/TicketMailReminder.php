@@ -61,6 +61,25 @@ class TicketMailReminder extends Command {
 
 		$ammount = count($tickets);
 
+		// Elaborates who is the ticket admin.
+		$admins = [];
+		function whoIsAdmin(&$admins, $ticket)
+		{
+			/* First it will check if it already queried the DB for that admin ID.
+			*  This is to reduce the number of queries to the DB.
+			*/ 
+			foreach ($admins as $admin) {
+				if ($admin->id == $ticket->assigned_to) {
+					return $admin;
+				}
+			}
+
+			// Else it will ask the DB.
+			$admin = User::where('id', '=', $ticket->assigned_to)->first();
+			array_push($admins, $admin);
+			return $admin;
+		}
+
 		/* It gives feedback about:
 		*	- If it's going to send the emails.
 		*	- The ammount of days condidered specified via input or by default value. 
@@ -87,7 +106,7 @@ class TicketMailReminder extends Command {
 				$message = "-- ID: ".$ticket->id;
 				$message .= ", Code: ".$ticket->code;
 				$message .= ", Subject: ".$ticket->subject;
-				$message .= ", Assigned to: ".$ticket->assigned_to;
+				$message .= ", Assigned to: ".whoIsAdmin($admins, $ticket)->screen_name;
 				$message .= ", Days passed: ".Carbon::now()->diffInDays($ticket->created_at)."\n";
 				echo $message;
 			}
@@ -100,29 +119,57 @@ class TicketMailReminder extends Command {
 
 		// This will send an email for each old open ticket.
 		if (!$is_situation) {
-			$admins = [];
 			foreach ($tickets as $ticket) {
-				/* First it will check if it already queried the DB for that admin ID.
-				*  This is to reduce the number of queries to the DB.
-				*/ 
-
-				// Else it will ask the DB.
-				$target = User::where('id', '=', $ticket->assigned_to)->first();
-
-				// Now it has the data to send the email.
+				// First it will discover who is the admin for this ticket.
+				$admin = whoIsAdmin($admins, $ticket);
+				exit();
+				// Now it has all the data to send the email.
 				$delay = Carbon::now()->diffInDays($ticket->created_at);
-				\Mail::send('emails.ticketMailReminder.reminder', array('ticket' => $ticket, 'target' => $target, 'delay' => $delay), function($message) use($target, $ticket) {
+				\Mail::send('emails.ticketMailReminder.reminder', array('ticket' => $ticket, 'admin' => $admin, 'delay' => $delay), function($message) use($admin, $ticket) {
 				    $message
-				    ->to($target->email, $target->screen_name)
+				    ->to($admin->email, $admin->screen_name)
 				    ->subject(sprintf(trans('It is %s days that %s is waiting for your help!'), Carbon::now()->diffInDays($ticket->created_at), $ticket->author_email));
 				});
 			}
 		}
 
-		//$recipients = $this->option('report');
+		// This will send an email to each email address given with "report" or "situation".
+		if ($recipients) {
 
-		foreach ($recipients as $recipient) {
-			echo "a".$recipient."\n";
+			// Generating the report message
+			$th = "<th style=\"padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal\">";
+			$td = "<td style=\"text-align: center;padding:10px 5px;border-style:solid;border-width:1px;overflow:hidden;word-break:normal\">";
+			$report = '<table style="border-collapse:collapse;border-spacing:0">';
+			$report .= "<tr>";
+			$report .= $th."Ticket ID</th>";
+			$report .= $th."User</th>";
+			$report .= $th."Ticket</th>";
+			$report .= $th."Subject</th>";
+			$report .= $th."Assigned to</th>";
+			$report .= $th."Days passed</th>";
+			$report .= "</tr>";
+			foreach ($tickets as $ticket) {
+				$admin = whoIsAdmin($admins, $ticket);
+				$report .= "<tr>";
+				$report .= $td.$ticket->id."</td>";
+				$report .= $td.$ticket->author_email."</td>";
+				$report .= $td."<a href=".URL::to('tickets/code', array($ticket->code)).">".$ticket->code."</a></td>";
+				$report .= $td.$ticket->subject."</td>";
+				$report .= $td.$admin->screen_name."</td>";
+				$report .= $td.Carbon::now()->diffInDays($ticket->created_at)."</td>";
+				$report .= "</tr>";
+			}
+			$report .= "</table>";
+
+			// Send the report to each recipient
+			foreach ($recipients as $recipient) {
+				\Mail::send('emails.ticketMailReminder.report', array('report' => $report), function($message) use($recipient) {
+				    $message
+				    ->to($recipient)
+				    ->subject(sprintf(trans('[%s]: Ticket System Status Report'), Carbon::now()));
+				});
+			}
+
 		}
 
 	}
