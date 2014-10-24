@@ -39,18 +39,23 @@ class TicketMailReminder extends Command {
 	 */
 	public function fire()
 	{
-		// Error message to check that the user input does not contain both 'report' and 'situation'.
-		if ($this->option('report') AND $this->option('situation')) {
-			echo "Impossible! \"--report|-r\" and \"--situation|-s\" are mutually exclusive.\n";
-			return null;
-		}
+		$recipients = array_merge($this->option('report'),$this->option('situation'));
+		$is_report = ($this->option('report') ? true : false);
+		$is_situation = ($this->option('situation') ? true : false);
 
-		$message = "";
-		$now = Carbon::now();
+		// Error message to check that the user input does not contain both 'report' and 'situation'.
+		if ($is_report AND $is_situation) {
+			exit("Impossible! \"--report|-r\" and \"--situation|-s\" are mutually exclusive.\n");
+		}
+		
+		$is_test = $this->option('test');
+		$do_list = $this->option('list');
+		$do_confirm = $this->option('confirm');
 		$interval = intval($this->option('days'));
 
+
 		// This is the database query, for tickets older than $interval and still open.
-		$tickets = Models\Ticket::where('created_at', '<', $now->subDays($interval))
+		$tickets = Models\Ticket::where('created_at', '<', Carbon::now()->subDays($interval))
 								->where('open', '=', 1)
 								->get();
 
@@ -60,43 +65,63 @@ class TicketMailReminder extends Command {
 		*	- If it's going to send the emails.
 		*	- The ammount of days condidered specified via input or by default value. 
 		*/
-		if ($this->option('confirm')) {
-			if ($this->option('test') OR $this->option('situation')) {
-				$message = "[".$now."]: ";
+		if ($do_confirm) {
+			$message = "";
+			if ($is_test OR $is_situation) {
+				$message = "[".Carbon::now()."]: ";
 				$message .= "Searching for open tickets over ";
 				$message .= $interval." ".($interval == 1 ? "day" : "days")." old.\n";
 			} else {
-				$message = "[".$now."]: ";
+				$message = "[".Carbon::now()."]: ";
 				$message .= "I'm about to send a reminder to all open tickets more than ";
 				$message .= $interval." ".($interval == 1 ? "day" : "days")." old.\n";
 			}
 			$message .= "- I found ".$ammount." ".($ammount == 1 ? "ticket" : "tickets");
-			$message .= ($this->option('list') ? ":" : ".")."\n";
+			$message .= ($do_list ? ":" : ".")."\n";
 			echo $message;
 		}
 
 		// It gives feedback about the status of the old and open tickets.
-		if ($this->option('list')) {
+		if ($do_list) {
 			foreach ($tickets as $ticket) {
 				$message = "-- ID: ".$ticket->id;
 				$message .= ", Code: ".$ticket->code;
 				$message .= ", Subject: ".$ticket->subject;
 				$message .= ", Assigned to: ".$ticket->assigned_to;
-				$message .= ", Days passed: ".$now->diffInDays($ticket->created_at)."\n";
+				$message .= ", Days passed: ".Carbon::now()->diffInDays($ticket->created_at)."\n";
+				echo $message;
 			}
-			echo $message;
+		}
+
+		// If it's a test do not proceed further.
+		if ($is_test) {
+			exit("No email has been sent.\n");
 		}
 
 		// This will send an email for each old open ticket.
-		if (!$this->option('test') AND !$this->option('situation')) {
+		if (!$is_situation) {
+			$admins = [];
 			foreach ($tickets as $ticket) {
-				echo "mails sent\n";
+				/* First it will check if it already queried the DB for that admin ID.
+				*  This is to reduce the number of queries to the DB.
+				*/ 
+
+				// Else it will ask the DB.
+				$target = User::where('id', '=', $ticket->assigned_to)->first();
+
+				// Now it has the data to send the email.
+				\Mail::send('emails.ticketMailReminder.report', array('ticket' => $ticket, 'target' => $target), function($message) use($target, $ticket) {
+				    $message
+				    ->to($target->email, $target->screen_name)
+				    ->subject(sprintf(trans('It is %s days that %s is waiting your help!'), Carbon::now()->diffInDays($ticket->created_at), $ticket->author_email));
+				});
 			}
 		}
 
-		// This will send an email for each old open ticket.
-		foreach ($this->option('report') as $address) {
-			echo $address."\n";
+		//$recipients = $this->option('report');
+
+		foreach ($recipients as $recipient) {
+			echo "a".$recipient."\n";
 		}
 
 	}
