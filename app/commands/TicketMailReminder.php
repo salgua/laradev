@@ -122,7 +122,7 @@ class TicketMailReminder extends Command {
 			foreach ($tickets as $ticket) {
 				// First it will discover who is the admin for this ticket.
 				$admin = whoIsAdmin($admins, $ticket);
-				exit();
+				
 				// Now it has all the data to send the email.
 				$delay = Carbon::now()->diffInDays($ticket->created_at);
 				\Mail::send('emails.ticketMailReminder.reminder', array('ticket' => $ticket, 'admin' => $admin, 'delay' => $delay), function($message) use($admin, $ticket) {
